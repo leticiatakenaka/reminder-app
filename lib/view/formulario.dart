@@ -13,8 +13,6 @@ class _FormularioDialogState extends State<FormularioDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final diaPosterior = DateTime.now().add(const Duration(days: 1));
-
     return Dialog(
         child: SingleChildScrollView(
             child: Padding(

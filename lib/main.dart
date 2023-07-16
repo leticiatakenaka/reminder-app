@@ -2,16 +2,19 @@ import "package:flutter/material.dart";
 import "package:lembretes_app/view/home.dart";
 import "package:flutter_localizations/flutter_localizations.dart";
 import "package:intl/date_symbol_data_local.dart";
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   initializeDateFormatting("pt_BR", null).then((_) {
     runApp(const Main());
   });
 }
 
 class Main extends StatelessWidget {
-  const Main({super.key});
-
+  const Main({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,8 +30,6 @@ class Main extends StatelessWidget {
         theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true),
-        home: Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            body: Home()));
+        home: const Home());
   }
 }
