@@ -22,17 +22,15 @@ class Home extends StatelessWidget {
           centerTitle: true,
         ),
         bottomNavigationBar: FloatingActionButton(
-          onPressed: () {
-            _mostrarFormulario(context);
-          },
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("NOVO LEMBRETE"),
-              Icon(Icons.add),
-            ],
-          ),
-        ),
+            onPressed: () {
+              _mostrarFormulario(context, false, null);
+            },
+            child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add),
+                  Text("NOVO LEMBRETE"),
+                ])),
         body: StreamBuilder(
             stream: db.collection('lembretes').snapshots(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -48,7 +46,9 @@ class Home extends StatelessWidget {
                         snapshot.data.docs[index];
                     return ListTile(
                         title: Text(documentSnapshot['lembrete']),
-                        onTap: () {},
+                        onTap: () {
+                          _mostrarFormulario(context, true, documentSnapshot);
+                        },
                         trailing: IconButton(
                             icon: const Icon(
                               Icons.delete_outline,
@@ -64,9 +64,12 @@ class Home extends StatelessWidget {
   }
 }
 
-void _mostrarFormulario(BuildContext context) {
+void _mostrarFormulario(
+    BuildContext context, bool atualizar, DocumentSnapshot? documentSnapshot) {
   showDialog(
       context: context,
-      builder: (BuildContext context) =>
-          FormularioDialog(db: FirebaseFirestore.instance));
+      builder: (BuildContext context) => FormularioDialog(
+          db: FirebaseFirestore.instance,
+          atualizar: atualizar,
+          documentSnapshot: documentSnapshot));
 }

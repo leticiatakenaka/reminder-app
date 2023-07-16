@@ -3,8 +3,15 @@ import "package:flutter/material.dart";
 
 class FormularioDialog extends StatefulWidget {
   final FirebaseFirestore db;
+  final bool atualizar;
+  final DocumentSnapshot? documentSnapshot;
 
-  const FormularioDialog({required this.db, Key? key}) : super(key: key);
+  const FormularioDialog(
+      {required this.db,
+      required this.atualizar,
+      required this.documentSnapshot,
+      Key? key})
+      : super(key: key);
 
   @override
   State<FormularioDialog> createState() => _FormularioDialogState();
@@ -16,7 +23,7 @@ class _FormularioDialogState extends State<FormularioDialog> {
   String? titulo;
 
   final diaPosterior = DateTime.now().add(const Duration(days: 1));
-  late DateTime data;
+  late DateTime data = diaPosterior;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +35,12 @@ class _FormularioDialogState extends State<FormularioDialog> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                            const Text("Novo Lembrete",
+                            Text(
+                                widget.atualizar
+                                    ? "Atualizar Lembrete"
+                                    : "Novo Lembrete",
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 24, fontWeight: FontWeight.bold)),
                             const SizedBox(height: 24),
                             const Align(
@@ -61,7 +71,7 @@ class _FormularioDialogState extends State<FormularioDialog> {
                                   paginaDois = true;
                                 });
                               },
-                              child: const Text("Próximo"),
+                              child: const Text("SELECIONAR DATA"),
                             ),
                           ])
                     : Column(
@@ -77,13 +87,22 @@ class _FormularioDialogState extends State<FormularioDialog> {
                             const SizedBox(height: 40),
                             ElevatedButton(
                                 onPressed: () {
-                                  widget.db
-                                      .collection("lembretes")
-                                      .add({"lembrete": titulo, "data": data});
+                                  if (widget.atualizar) {
+                                    widget.db
+                                        .collection("lembretes")
+                                        .doc(widget.documentSnapshot?.id)
+                                        .update(
+                                            {"lembrete": titulo, "data": data});
+                                  } else {
+                                    widget.db.collection("lembretes").add(
+                                        {"lembrete": titulo, "data": data});
+                                  }
                                   Navigator.pop(context);
                                 },
-                                child: const Text(
-                                  "ADICIONAR LEMBRETE",
+                                child: Text(
+                                  widget.atualizar
+                                      ? "ATUALIZAR LEMBRETE"
+                                      : "ADICIONAR LEMBRETE",
                                 ))
                           ]))));
   }
