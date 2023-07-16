@@ -27,9 +27,7 @@ class Main extends StatelessWidget {
           Locale("pt", "BR"),
         ],
         locale: const Locale("pt", "BR"),
-        theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true),
+        theme: ThemeData(useMaterial3: true),
         home: const Home());
   }
 }

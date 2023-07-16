@@ -53,16 +53,17 @@ class _FormularioDialogState extends State<FormularioDialog> {
                                       : "Novo Lembrete",
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold)),
+                                    fontSize: 20,
+                                    color: Color(0xFFAD1457),
+                                  )),
                               const SizedBox(height: 24),
                               const Align(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                     "Título do Lembrete",
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                                      fontSize: 18,
+                                    ),
                                   )),
                               const SizedBox(height: 8),
                               TextFormField(
@@ -80,7 +81,6 @@ class _FormularioDialogState extends State<FormularioDialog> {
                                       : "",
                                   decoration: InputDecoration(
                                       filled: true,
-                                      fillColor: Colors.grey[200],
                                       hintText:
                                           "Digite o título do lembrete...",
                                       border: OutlineInputBorder(
@@ -104,6 +104,11 @@ class _FormularioDialogState extends State<FormularioDialog> {
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
+                            const Text("Selecione a data",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Color(0xFFAD1457),
+                                )),
                             CalendarDatePicker(
                                 firstDate: diaPosterior,
                                 initialDate: widget.atualizar

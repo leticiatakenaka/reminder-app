@@ -18,16 +18,24 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Lembretes"), centerTitle: true),
-        bottomNavigationBar: FloatingActionButton(
+        appBar: AppBar(
+          title: const Text("Lembretes",
+              style: TextStyle(
+                fontSize: 24,
+                color: Color(0xFFAD1457),
+              )),
+          backgroundColor: const Color(0xFFE1BEE7),
+        ),
+        floatingActionButton: FloatingActionButton(
             onPressed: () {
               _mostrarFormulario(context, false, null);
             },
+            backgroundColor: const Color(0xFFE1BEE7),
+            foregroundColor: const Color(0xFFAD1457),
             child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.add),
-                  Text("NOVO LEMBRETE"),
                 ])),
         body: StreamBuilder(
             stream: db.collection("lembretes").snapshots(),
@@ -51,7 +59,8 @@ class Home extends StatelessWidget {
                 int seconds = doc["data"].seconds;
                 DateTime data =
                     DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
-                String dataFormatada = DateFormat('dd/MM/yyyy').format(data);
+                String dataFormatada =
+                    DateFormat("EEE, dd/MM/yyyy", "pt_BR").format(data);
 
                 if (lembretesAgrupados.containsKey(dataFormatada)) {
                   lembretesAgrupados[dataFormatada]!.add(doc);
@@ -71,6 +80,8 @@ class Home extends StatelessWidget {
                     return Column(children: [
                       ListTile(
                         title: Text(dataFormatada),
+                        titleTextStyle: const TextStyle(
+                            color: Color(0xFFAD1457), fontSize: 18),
                       ),
                       ...lembretesParaData.map((documentSnapshot) {
                         return ListTile(
@@ -82,6 +93,7 @@ class Home extends StatelessWidget {
                             },
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline),
+                              color: const Color(0xFFAD1457),
                               onPressed: () {
                                 db
                                     .collection("lembretes")
