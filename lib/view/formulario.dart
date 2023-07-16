@@ -1,8 +1,10 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
-import "package:lembretes_app/view/calendario.dart";
 
 class FormularioDialog extends StatefulWidget {
-  const FormularioDialog({super.key});
+  final FirebaseFirestore db;
+
+  const FormularioDialog({required this.db, Key? key}) : super(key: key);
 
   @override
   State<FormularioDialog> createState() => _FormularioDialogState();
@@ -10,6 +12,11 @@ class FormularioDialog extends StatefulWidget {
 
 class _FormularioDialogState extends State<FormularioDialog> {
   bool paginaDois = false;
+
+  String? titulo;
+
+  final diaPosterior = DateTime.now().add(const Duration(days: 1));
+  late DateTime data;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +43,9 @@ class _FormularioDialogState extends State<FormularioDialog> {
                                 )),
                             const SizedBox(height: 8),
                             TextFormField(
+                                onChanged: (String val) {
+                                  titulo = val;
+                                },
                                 decoration: InputDecoration(
                                     filled: true,
                                     fillColor: Colors.grey[200],
@@ -54,11 +64,27 @@ class _FormularioDialogState extends State<FormularioDialog> {
                               child: const Text("Próximo"),
                             ),
                           ])
-                    : const Column(
+                    : Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                            CalendarioDialog(),
-                            SizedBox(height: 40),
+                            CalendarDatePicker(
+                                firstDate: diaPosterior,
+                                initialDate: diaPosterior,
+                                lastDate: DateTime(2025),
+                                onDateChanged: (DateTime value) {
+                                  data = value;
+                                }),
+                            const SizedBox(height: 40),
+                            ElevatedButton(
+                                onPressed: () {
+                                  widget.db
+                                      .collection("lembretes")
+                                      .add({"lembrete": titulo, "data": data});
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  "ADICIONAR LEMBRETE",
+                                ))
                           ]))));
   }
 }
