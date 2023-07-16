@@ -19,19 +19,16 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Lembretes",
-              style: TextStyle(
-                fontSize: 24,
-                color: Color(0xFFAD1457),
-              )),
-          backgroundColor: const Color(0xFFE1BEE7),
+          backgroundColor: const Color(0xFFAD1457),
+          title: const Text("Lista de Lembretes",
+              style: TextStyle(fontSize: 24, color: Colors.white)),
         ),
         floatingActionButton: FloatingActionButton(
             onPressed: () {
               _mostrarFormulario(context, false, null);
             },
-            backgroundColor: const Color(0xFFE1BEE7),
-            foregroundColor: const Color(0xFFAD1457),
+            backgroundColor: const Color(0xFFAD1457),
+            foregroundColor: const Color(0xFFE1BEE7),
             child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

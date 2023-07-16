@@ -97,7 +97,16 @@ class _FormularioDialogState extends State<FormularioDialog> {
                                     });
                                   }
                                 },
-                                child: const Text("SELECIONAR DATA"),
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: const Color(0xFFAD1457),
+                                ),
+                                child: const Text(
+                                  "Selecionar Data",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                             ]),
                       )
@@ -134,10 +143,17 @@ class _FormularioDialogState extends State<FormularioDialog> {
                                   }
                                   Navigator.pop(context);
                                 },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: const Color(0xFFAD1457),
+                                ),
                                 child: Text(
                                   widget.atualizar
-                                      ? "ATUALIZAR LEMBRETE"
-                                      : "ADICIONAR LEMBRETE",
+                                      ? "Atualizar Lembrete"
+                                      : "Adicionar Lembrete",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                  ),
                                 ))
                           ]))));
   }
