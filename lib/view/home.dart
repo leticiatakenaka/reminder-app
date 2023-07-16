@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import "package:flutter/material.dart";
+import "package:firebase_core/firebase_core.dart";
+import "package:cloud_firestore/cloud_firestore.dart";
 
-import 'formulario.dart';
+import "formulario.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +32,7 @@ class Home extends StatelessWidget {
                   Text("NOVO LEMBRETE"),
                 ])),
         body: StreamBuilder(
-            stream: db.collection('lembretes').snapshots(),
+            stream: db.collection("lembretes").snapshots(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
                 return const Center(
@@ -45,7 +45,7 @@ class Home extends StatelessWidget {
                     DocumentSnapshot documentSnapshot =
                         snapshot.data.docs[index];
                     return ListTile(
-                        title: Text(documentSnapshot['lembrete']),
+                        title: Text(documentSnapshot["lembrete"]),
                         onTap: () {
                           _mostrarFormulario(context, true, documentSnapshot);
                         },
@@ -55,7 +55,7 @@ class Home extends StatelessWidget {
                             ),
                             onPressed: () {
                               db
-                                  .collection('lembretes')
+                                  .collection("lembretes")
                                   .doc(documentSnapshot.id)
                                   .delete();
                             }));

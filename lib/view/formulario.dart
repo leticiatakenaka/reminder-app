@@ -18,6 +18,8 @@ class FormularioDialog extends StatefulWidget {
 }
 
 class _FormularioDialogState extends State<FormularioDialog> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   bool paginaDois = false;
 
   String? titulo;
@@ -27,59 +29,81 @@ class _FormularioDialogState extends State<FormularioDialog> {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, dynamic> dadosFirebase =
+        widget.documentSnapshot?.data() as Map<String, dynamic>;
+    titulo = dadosFirebase["lembrete"] ?? "";
+
     return Dialog(
         child: SingleChildScrollView(
             child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: !paginaDois
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                            Text(
-                                widget.atualizar
-                                    ? "Atualizar Lembrete"
-                                    : "Novo Lembrete",
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                    fontSize: 24, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 24),
-                            const Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Título do Lembrete",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                )),
-                            const SizedBox(height: 8),
-                            TextFormField(
-                                onChanged: (String val) {
-                                  titulo = val;
+                    ? Form(
+                        key: _formKey,
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                  widget.atualizar
+                                      ? "Atualizar Lembrete"
+                                      : "Novo Lembrete",
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold)),
+                              const SizedBox(height: 24),
+                              const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Título do Lembrete",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  )),
+                              const SizedBox(height: 8),
+                              TextFormField(
+                                  onChanged: (String val) {
+                                    titulo = val;
+                                  },
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return "Informe o título";
+                                    }
+                                    return null;
+                                  },
+                                  initialValue: titulo,
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Colors.grey[200],
+                                      hintText:
+                                          "Digite o título do lembrete...",
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ))),
+                              const SizedBox(height: 40),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      paginaDois = true;
+                                    });
+                                  }
                                 },
-                                decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Colors.grey[200],
-                                    hintText: "Digite o título do lembrete...",
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ))),
-                            const SizedBox(height: 40),
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  paginaDois = true;
-                                });
-                              },
-                              child: const Text("SELECIONAR DATA"),
-                            ),
-                          ])
+                                child: const Text("SELECIONAR DATA"),
+                              ),
+                            ]),
+                      )
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                             CalendarDatePicker(
                                 firstDate: diaPosterior,
-                                initialDate: diaPosterior,
+                                initialDate: widget.atualizar
+                                    ? (dadosFirebase["data"] as Timestamp)
+                                        .toDate()
+                                    : diaPosterior,
                                 lastDate: DateTime(2025),
                                 onDateChanged: (DateTime value) {
                                   data = value;
