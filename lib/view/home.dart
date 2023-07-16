@@ -18,10 +18,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Lembretes"),
-          centerTitle: true,
-        ),
+        appBar: AppBar(title: const Text("Lembretes"), centerTitle: true),
         bottomNavigationBar: FloatingActionButton(
             onPressed: () {
               _mostrarFormulario(context, false, null);
@@ -40,39 +37,60 @@ class Home extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
               }
+
+              List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
+              docs.sort((a, b) {
+                int aSeconds = a["data"].seconds;
+                int bSeconds = b["data"].seconds;
+                return aSeconds.compareTo(bSeconds);
+              });
+
+              Map<String, List<DocumentSnapshot>> lembretesAgrupados = {};
+
+              for (var doc in docs) {
+                int seconds = doc["data"].seconds;
+                DateTime data =
+                    DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+                String dataFormatada = DateFormat('dd/MM/yyyy').format(data);
+
+                if (lembretesAgrupados.containsKey(dataFormatada)) {
+                  lembretesAgrupados[dataFormatada]!.add(doc);
+                } else {
+                  lembretesAgrupados[dataFormatada] = [doc];
+                }
+              }
+
               return ListView.builder(
-                  itemCount: snapshot.data?.docs.length,
+                  itemCount: lembretesAgrupados.length,
                   itemBuilder: (context, int index) {
-                    List<DocumentSnapshot> docs = snapshot.data?.docs;
-                    docs.sort((a, b) {
-                      int aSeconds = a["data"].seconds;
-                      int bSeconds = b["data"].seconds;
-                      return aSeconds.compareTo(bSeconds);
-                    });
-                    DocumentSnapshot documentSnapshot = docs[index];
-
-                    int seconds = documentSnapshot["data"].seconds;
-                    DateTime data =
-                        DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
                     String dataFormatada =
-                        DateFormat('dd/MM/yyyy').format(data);
+                        lembretesAgrupados.keys.elementAt(index);
+                    List<DocumentSnapshot> lembretesParaData =
+                        lembretesAgrupados[dataFormatada]!;
 
-                    return ListTile(
+                    return Column(children: [
+                      ListTile(
                         title: Text(dataFormatada),
-                        subtitle: Text(documentSnapshot["lembrete"]),
-                        onTap: () {
-                          _mostrarFormulario(context, true, documentSnapshot);
-                        },
-                        trailing: IconButton(
-                            icon: const Icon(
-                              Icons.delete_outline,
-                            ),
-                            onPressed: () {
-                              db
-                                  .collection("lembretes")
-                                  .doc(documentSnapshot.id)
-                                  .delete();
-                            }));
+                      ),
+                      ...lembretesParaData.map((documentSnapshot) {
+                        return ListTile(
+                            title:
+                                Text("       ${documentSnapshot["lembrete"]}"),
+                            onTap: () {
+                              _mostrarFormulario(
+                                  context, true, documentSnapshot);
+                            },
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () {
+                                db
+                                    .collection("lembretes")
+                                    .doc(documentSnapshot.id)
+                                    .delete();
+                              },
+                            ));
+                      }).toList(),
+                    ]);
                   });
             }));
   }
