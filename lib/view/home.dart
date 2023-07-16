@@ -43,8 +43,13 @@ class Home extends StatelessWidget {
               return ListView.builder(
                   itemCount: snapshot.data?.docs.length,
                   itemBuilder: (context, int index) {
-                    DocumentSnapshot documentSnapshot =
-                        snapshot.data.docs[index];
+                    List<DocumentSnapshot> docs = snapshot.data?.docs;
+                    docs.sort((a, b) {
+                      int aSeconds = a["data"].seconds;
+                      int bSeconds = b["data"].seconds;
+                      return aSeconds.compareTo(bSeconds);
+                    });
+                    DocumentSnapshot documentSnapshot = docs[index];
 
                     int seconds = documentSnapshot["data"].seconds;
                     DateTime data =
