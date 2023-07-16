@@ -22,16 +22,20 @@ class _FormularioDialogState extends State<FormularioDialog> {
 
   bool paginaDois = false;
 
-  String? titulo;
-
   final diaPosterior = DateTime.now().add(const Duration(days: 1));
   late DateTime data = diaPosterior;
 
+  late String titulo = "";
+
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> dadosFirebase =
-        widget.documentSnapshot?.data() as Map<String, dynamic>;
-    titulo = dadosFirebase["lembrete"] ?? "";
+    Map<String, dynamic> dadosFirebase = {};
+
+    try {
+      dadosFirebase = widget.documentSnapshot?.data() as Map<String, dynamic>;
+    } catch (e) {
+      print("Error: $e");
+    }
 
     return Dialog(
         child: SingleChildScrollView(
@@ -71,7 +75,9 @@ class _FormularioDialogState extends State<FormularioDialog> {
                                     }
                                     return null;
                                   },
-                                  initialValue: titulo,
+                                  initialValue: widget.atualizar
+                                      ? titulo = dadosFirebase["lembrete"]
+                                      : "",
                                   decoration: InputDecoration(
                                       filled: true,
                                       fillColor: Colors.grey[200],
