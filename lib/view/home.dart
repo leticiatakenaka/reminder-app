@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:intl/intl.dart";
 
 import "formulario.dart";
 
@@ -44,8 +45,16 @@ class Home extends StatelessWidget {
                   itemBuilder: (context, int index) {
                     DocumentSnapshot documentSnapshot =
                         snapshot.data.docs[index];
+
+                    int seconds = documentSnapshot["data"].seconds;
+                    DateTime data =
+                        DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+                    String dataFormatada =
+                        DateFormat('dd/MM/yyyy').format(data);
+
                     return ListTile(
-                        title: Text(documentSnapshot["lembrete"]),
+                        title: Text(dataFormatada),
+                        subtitle: Text(documentSnapshot["lembrete"]),
                         onTap: () {
                           _mostrarFormulario(context, true, documentSnapshot);
                         },
