@@ -54,7 +54,10 @@ class Home extends StatelessWidget {
                               Icons.delete_outline,
                             ),
                             onPressed: () {
-//delete
+                              db
+                                  .collection('lembretes')
+                                  .doc(documentSnapshot.id)
+                                  .delete();
                             }));
                   });
             }));
